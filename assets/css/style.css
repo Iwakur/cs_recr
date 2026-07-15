@@ -1,0 +1,60 @@
+.site-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.site-logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.gallery-group {
+    margin-top: 2rem;
+}
+
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.media-grid img,
+.media-grid video {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.video-grid figure {
+    margin: 0;
+}
+
+.video-grid figcaption {
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.site-footer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    padding: 2rem 1rem;
+}
+
+.site-footer h2 {
+    font-size: 1rem;
+}
+
+.site-footer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.site-footer p {
+    margin-bottom: 0.5rem;
+}
