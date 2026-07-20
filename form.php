@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'consent' => 1,
                 ]);
 
-                header('Location: /success.php');
+                header('Location: success.php');
                 exit;
             } catch (PDOException) {
                 $errors[] = "La candidature n'a pas pu être enregistrée.";
@@ -110,7 +110,7 @@ include_once __DIR__ . '/includes/header.php';
 ?>
 
 <main class="container form-page">
-    <p><a href="/index.php">&larr; Retour à l'accueil</a></p>
+    <p><a href="index.php">&larr; Retour à l'accueil</a></p>
 
     <section>
         <h1>Postuler à l'équipe CanSat</h1>
@@ -131,7 +131,7 @@ include_once __DIR__ . '/includes/header.php';
         </article>
     <?php endif; ?>
 
-    <form method="post" action="/form.php">
+    <form method="post" action="form.php">
         <fieldset>
             <legend>Informations personnelles</legend>
 
@@ -229,13 +229,13 @@ include_once __DIR__ . '/includes/header.php';
         <button type="submit">Envoyer la candidature</button>
     </form>
 
-    <section class="privacy-note">
-        <h2>Confidentialité</h2>
-        <p>
-            Les informations envoyées servent uniquement à organiser le recrutement
-            de l'équipe CanSat et à te recontacter.
-        </p>
-    </section>
+<!--    <section class="privacy-note">-->
+<!--        <h2>Confidentialité</h2>-->
+<!--        <p>-->
+<!--            Les informations envoyées servent uniquement à organiser le recrutement-->
+<!--            de l'équipe CanSat et à te recontacter.-->
+<!--        </p>-->
+<!--    </section>-->
 </main>
 
 <?php include_once __DIR__ . '/includes/footer.php'; ?>

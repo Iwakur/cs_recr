@@ -1,8 +1,8 @@
-<?php include_once 'includes/header.php'; ?>
+<?php require 'includes/header.php'; ?>
 <?php
 $deadline = new DateTimeImmutable('2026-09-15');
 $today = new DateTimeImmutable('today');
-$daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
+$daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
 ?>
 <main class="container">
     <section class="hero" id="accueil">
@@ -14,9 +14,9 @@ $daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
                 présenter un mini-satellite pendant le concours CanSat.
             </p>
             <p>Les candidatures sont ouvertes jusqu'au 15 septembre.</p>
-            <a role="button" href="/form.php">Postuler</a>
+            <a role="button" href="index.php#postuler">Postuler</a>
         </div>
-        <img src="/assets/media/photos/cansat_photo.jpg" alt="Prototype CanSat">
+        <img src="assets/img/cansat_hero.png" alt="Prototype CanSat">
     </section>
 
 
@@ -60,12 +60,18 @@ $daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
         </p>
 
         <div class="card-grid">
-            <article><h3>Programmation</h3><p>Capteurs, stockage des données et sécurité du système.</p></article>
-            <article><h3>Électronique</h3><p>Câblage, alimentation, prototypage et intégration matérielle.</p></article>
-            <article><h3>Mécanique</h3><p>Structure 3D, fixation des composants, parachute et stabilité.</p></article>
-            <article><h3>Données</h3><p>Graphiques, analyse scientifique et visualisation des résultats.</p></article>
-            <article><h3>Communication</h3><p>Présentation, identité visuelle, documentation et réseaux sociaux.</p></article>
-            <article><h3>Gestion de projet</h3><p>Planning, coordination, suivi des tests et préparation des livrables.</p></article>
+            <article><h3>Programmation</h3>
+                <p>Capteurs, stockage des données et sécurité du système.</p></article>
+            <article><h3>Électronique</h3>
+                <p>Câblage, alimentation, prototypage et intégration matérielle.</p></article>
+            <article><h3>Mécanique</h3>
+                <p>Structure 3D, fixation des composants, parachute et stabilité.</p></article>
+            <article><h3>Données</h3>
+                <p>Graphiques, analyse scientifique et visualisation des résultats.</p></article>
+            <article><h3>Communication</h3>
+                <p>Présentation, identité visuelle, documentation et réseaux sociaux.</p></article>
+            <article><h3>Gestion de projet</h3>
+                <p>Planning, coordination, suivi des tests et préparation des livrables.</p></article>
         </div>
     </section>
 
@@ -87,7 +93,9 @@ $daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
             <li><strong>Septembre</strong><span>Candidatures et formation de l'équipe.</span></li>
             <li><strong>Octobre</strong><span>Choix de mission, premiers schémas et répartition des rôles.</span></li>
             <li><strong>Hiver</strong><span>Prototype, programmation, intégration et premiers tests.</span></li>
-            <li><strong>Printemps</strong><span>Version finale, validation, présentation et préparation du concours.</span></li>
+            <li>
+                <strong>Printemps</strong><span>Version finale, validation, présentation et préparation du concours.</span>
+            </li>
             <li><strong>Compétition</strong><span>Lancement, analyse des données et défense du projet.</span></li>
         </ol>
     </section>
@@ -96,14 +104,14 @@ $daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
         <h2>Galerie</h2>
 
         <div class="media-grid">
-            <img src="/assets/media/photos/cansat_photo.jpg" alt="Prototype CanSat">
-            <img src="/assets/media/photos/preparation_military_base.jpg" alt="Préparation sur la base">
-            <img src="/assets/media/photos/starter_kit.jpg" alt="Kit de départ CanSat">
+            <img src="assets/media/photos/cansat_photo.jpg" alt="Prototype CanSat">
+            <img src="assets/media/photos/preparation_military_base.jpg" alt="Préparation sur la base">
+            <img src="assets/media/photos/starter_kit.jpg" alt="Kit de départ CanSat">
         </div>
 
         <figure class="mission-video">
             <video controls preload="metadata">
-                <source src="/assets/media/videos/launch_video.mp4" type="video/mp4">
+                <source src="assets/media/videos/launch_video.mp4" type="video/mp4">
                 Votre navigateur ne peut pas lire cette vidéo.
             </video>
             <figcaption>Lancement de la mission précédente</figcaption>
@@ -112,10 +120,6 @@ $daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
 
     <section id="faq">
         <h2>FAQ</h2>
-        <p>
-            Quelques réponses rapides avant de postuler.
-        </p>
-
         <details>
             <summary>Faut-il déjà savoir programmer ou faire de l'électronique ?</summary>
             <p>
@@ -140,16 +144,16 @@ $daysRemaining = max(0, (int) $today->diff($deadline)->format('%r%a'));
             </p>
         </details>
 
-        <p>Si tu as encore une question, contacte-nous avec les informations en bas de page.</p>
+        <small>Si tu as encore des questions, contacte-nous sans hesitation avec les informations en bas de page.</small>
 
     </section>
 
     <section class="final-cta" id="postuler">
         <h2>Prêt à rejoindre l'équipe ?</h2>
         <p>
-            Les candidatures ferment dans <?= $daysRemWaining ?> jour<?= $daysRemaining > 1 ? 's' : '' ?>.
+            Les candidatures ferment dans <?= $daysRemaining ?> jour<?= $daysRemaining > 1 ? 's' : '' ?>.
         </p>
-        <a role="button" href="/form.php">Postuler maintenant</a>
+        <a role="button" href="form.php">Postuler maintenant</a>
     </section>
 </main>
 
