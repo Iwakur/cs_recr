@@ -1,8 +1,17 @@
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1rem;
+}
+
 .site-logo {
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .site-logo img {
@@ -11,8 +20,56 @@
     object-fit: contain;
 }
 
-.gallery-group {
-    margin-top: 2rem;
+.site-header nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem 1rem;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
+    align-items: center;
+    gap: 2rem;
+    padding-block: 3rem;
+}
+
+.hero h1 {
+    max-width: 12ch;
+}
+
+.hero img,
+.mission-video video {
+    width: 100%;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.hero img {
+    aspect-ratio: 4 / 3;
+}
+
+.eyebrow {
+    margin-bottom: 0.5rem;
+    color: var(--pico-muted-color);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.card-grid article {
+    margin: 0;
+}
+
+.activity-list {
+    columns: 2 260px;
 }
 
 .media-grid {
@@ -29,13 +86,49 @@
     border-radius: 0.5rem;
 }
 
-.video-grid figure {
-    margin: 0;
+.mission-video {
+    margin-top: 1.5rem;
 }
 
-.video-grid figcaption {
+.mission-video figcaption {
     margin-top: 0.5rem;
     text-align: center;
+}
+
+.timeline {
+    padding-left: 0;
+    list-style: none;
+}
+
+.timeline li {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.final-cta {
+    padding-block: 2rem 3rem;
+    text-align: center;
+}
+
+.form-page {
+    max-width: 760px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 10rem;
+    gap: 1rem;
+}
+
+.form-errors {
+    border-color: var(--pico-del-color);
+}
+
+.privacy-note {
+    margin-top: 2rem;
 }
 
 .site-footer {
@@ -57,4 +150,25 @@
 
 .site-footer p {
     margin-bottom: 0.5rem;
+}
+
+@media (max-width: 760px) {
+    .site-header,
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .site-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .site-header nav {
+        justify-content: flex-start;
+    }
+
+    .form-row,
+    .timeline li {
+        grid-template-columns: 1fr;
+    }
 }
