@@ -29,8 +29,3 @@
 </footer>
 </body>
 </html>
-<!--
-Footer contact update:
-- Replaced emoji markers with local image icons for e-mail, Discord, and Telegram.
-- Kept every contact written as a tag-style username using IwakurXX for now.
--->
