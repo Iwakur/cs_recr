@@ -132,12 +132,12 @@ Never use `docker compose down -v` on production: `-v` deletes the database volu
 
 The checked-in GitHub Actions workflow builds the exact production image, checks every PHP file,
 runs the non-database tests, and validates the Compose model. Pull requests stop after verification.
-Successful pushes to `main` and tags beginning with `v` also publish the already-tested local image
+Successful pushes to `master` and tags beginning with `v` also publish the already-tested local image
 to GitHub Container Registry. Branch protection should require this workflow before merging.
 
 The workflow publishes these GHCR tags automatically:
 
-- every push to `main`: `ghcr.io/OWNER/REPOSITORY:sha-FULL_COMMIT_SHA` and `:latest`;
+- every push to `master`: `ghcr.io/OWNER/REPOSITORY:sha-FULL_COMMIT_SHA` and `:latest`;
 - every Git tag such as `v1.0.0`: `:sha-FULL_COMMIT_SHA` and `:v1.0.0`;
 - pull requests: no image is pushed.
 

@@ -3,7 +3,7 @@ name: CI and container publishing
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [master]
     tags: ["v*"]
 
 permissions:
@@ -54,8 +54,8 @@ jobs:
           docker tag "$LOCAL_IMAGE" "$GHCR_IMAGE:sha-$GITHUB_SHA"
           docker push "$GHCR_IMAGE:sha-$GITHUB_SHA"
 
-      - name: Publish latest image from main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Publish latest image from master
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           docker tag "$LOCAL_IMAGE" "$GHCR_IMAGE:latest"
           docker push "$GHCR_IMAGE:latest"
