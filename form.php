@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/session.php';
 $formRules = require __DIR__ . '/includes/form_rules.php';
 
 $errors = [];
@@ -103,6 +104,11 @@ function checked(string $name, string $value): string
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $invalidTypes = [];
+    $contentLength = filter_var($_SERVER['CONTENT_LENGTH'] ?? 0, FILTER_VALIDATE_INT);
+    if ($contentLength !== false && $contentLength > $formRules['request_max_bytes']) {
+        $errors[] = 'La requête envoyée est trop volumineuse.';
+    }
+
     foreach ($values as $key => $_) {
         if (is_array($_)) {
             $submittedValues = $_POST[$key] ?? [];
@@ -111,10 +117,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $values[$key] = [];
                 continue;
             }
-            $values[$key] = array_values(array_filter(array_map(
-                static fn ($value): string => is_string($value) ? trim($value) : '',
-                $submittedValues
-            ), static fn (string $value): bool => $value !== ''));
+
+            $maximumItems = $formRules['array_max_items'][$key];
+            if (count($submittedValues) > $maximumItems) {
+                $invalidTypes[$key] = true;
+                $submittedValues = array_slice($submittedValues, 0, $maximumItems);
+            }
+
+            $cleanValues = [];
+            foreach ($submittedValues as $submittedValue) {
+                if (!is_string($submittedValue)) {
+                    $invalidTypes[$key] = true;
+                    continue;
+                }
+
+                $submittedValue = trim($submittedValue);
+                if ($submittedValue !== '') {
+                    $cleanValues[] = $submittedValue;
+                }
+            }
+            $values[$key] = $cleanValues;
         } else {
             $submittedValue = $_POST[$key] ?? '';
             if (!is_string($submittedValue)) {
@@ -281,11 +303,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo = db();
 
         if ($pdo === null) {
-            $errors[] = "La base de données n'est pas encore configurée.";
+            redirectToResult('error');
         } else {
             try {
                 $statement = $pdo->prepare(
-                        'INSERT INTO applications (
+                        'INSERT INTO form (
                         first_name, last_name, contact,
                         class, age, gender, preferred_role, second_choice,
                         motivation, programming_level, electronics_level, cad_level, science_level,
@@ -336,10 +358,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'consent' => 1,
                 ]);
 
-                header('Location: success.php');
-                exit;
+                redirectToResult('success');
             } catch (PDOException) {
-                $errors[] = "La candidature n'a pas pu être enregistrée.";
+                redirectToResult('error');
             }
         }
     }

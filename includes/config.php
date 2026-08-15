@@ -1,7 +1,7 @@
 <?php
 
 define('DB_HOST', getenv('DB_HOST') ?: 'db');
-define('DB_NAME', getenv('DB_NAME') ?: 'db');
+define('DB_NAME', getenv('DB_NAME') ?: 'cansat');
 define('DB_USER', getenv('DB_USER') ?: 'db');
 define('DB_PASS', getenv('DB_PASS') ?: 'db');
 

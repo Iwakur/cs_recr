@@ -8,21 +8,29 @@ Minimal French-language recruitment website for the CEPES de Jodoigne CanSat tea
 - MySQL/MariaDB through PDO
 - DDEV for local development
 
+The application database is `cansat`; recruitment submissions are stored in the `form` table.
+
+Malformed-request limits are defined in `.user.ini` for standard PHP deployments and mirrored in
+`.ddev/php/cansat-hardening.ini` for DDEV. A custom production PHP image must allow `.user.ini` files
+or copy equivalent values into its PHP configuration.
+
 ## Main files
 
 - `index.php` — project information and recruitment landing page
 - `form.php` — application form, frontend behavior, backend validation, and persistence
-- `success.php` — successful-submission confirmation
+- `result.php` — one-time success, persistence-error, or neutral submission status
 - `rules.txt` — human-readable validation specification
 - `includes/form_rules.php` — executable shared limits
 - `sql/schema.sql` — clean database schema
 - `tests/form_validation_test.php` — validation and tampering tests
 - `tests/database_schema_test.php` — live database contract test
+- `EXPORT_GUIDE.md` — DDEV and Docker Compose database/Excel export procedure
 
 ## Local verification
 
 ```sh
 ddev exec php tests/form_validation_test.php
+ddev exec php tests/result_page_test.php
 ddev exec php tests/database_schema_test.php
 ```
 

@@ -44,6 +44,8 @@ BACKEND RULES
 - Character limits use Unicode-aware character counts.
 - Select, radio and checkbox values must exactly match server allowlists.
 - Duplicate submitted checkbox values are rejected.
+- POST bodies are limited to 256 KiB, 200 input variables and four nesting levels.
+- Multi-value fields reject nested arrays and values beyond their displayed option count.
 - age must be an integer from 16 through 25.
 - consent must have the exact submitted value "1".
 - The selected contact value is conditionally required and validated by its own format rule.

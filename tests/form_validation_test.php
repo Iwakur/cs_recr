@@ -49,7 +49,7 @@ function formErrors(array $override): array
         'english_listening_level' => 'Intermédiaire',
         'english_speaking_level' => 'Élémentaire',
         'role_flexibility' => 'Oui',
-        'availability' => ['Lundi après les cours'],
+        'availability' => ['Lundi'],
         'time_commitment' => 'Une réunion par semaine et du travail à la maison.',
         'consent' => '1',
     ];
@@ -104,6 +104,9 @@ assertContains($form, 'Flexibilité de rôle *', 'Required role flexibility mark
 if (($rules['lengths']['motivation'] ?? null) !== 800) {
     fail('Motivation rule should be 800 characters.');
 }
+if (($rules['request_max_bytes'] ?? null) !== 262144) {
+    fail('POST body limit should be 262144 bytes.');
+}
 assertNotContains($form, '???', 'Placeholder question');
 assertNotContains($form, 'Scientific', 'Mixed English role label');
 assertNotContains($form, 'reunions', 'Unaccented reunions');
@@ -139,6 +142,18 @@ assertError(
 );
 
 assertError(
+    ['known_skills' => [['Python']]],
+    'Certaines données envoyées ont un format invalide.',
+    'Nested multi-value field tampering validation'
+);
+
+assertError(
+    ['availability' => array_fill(0, 20, 'Lundi')],
+    'Certaines données envoyées ont un format invalide.',
+    'Oversized multi-value field validation'
+);
+
+assertError(
     ['known_skills' => ['Python', 'Python']],
     'Une compétence ne peut être choisie qu’une seule fois.',
     'Duplicate skill validation'
@@ -148,6 +163,12 @@ assertError(
     ['consent' => 'yes'],
     'Vous devez accepter que vos informations soient utilisées pour le recrutement.',
     'Exact consent validation'
+);
+
+assertError(
+    ['consent' => ['1']],
+    'Vous devez accepter que vos informations soient utilisées pour le recrutement.',
+    'Consent array tampering validation'
 );
 
 assertError(
@@ -165,6 +186,8 @@ assertError(
 assertNotContains($form, "'phone' => 'Téléphone'", 'Phone contact option');
 assertNotContains($form, 'name="phone"', 'Phone contact input');
 assertContains($form, "'contact' => \$values['preferred_contact'] . ': ' . \$values[\$values['preferred_contact']]", 'Prefixed contact storage');
+assertContains($form, "redirectToResult('success')", 'Successful submission redirect');
+assertContains($form, "redirectToResult('error')", 'Persistence error redirect');
 
 assertError(
     ['preferred_contact' => 'phone', 'discord' => '', 'phone' => '+32 470 12 34 56'],

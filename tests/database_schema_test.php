@@ -8,7 +8,7 @@ if (!$pdo instanceof PDO) {
     exit(1);
 }
 
-$columns = $pdo->query('SHOW COLUMNS FROM applications')->fetchAll(PDO::FETCH_COLUMN);
+$columns = $pdo->query('SHOW COLUMNS FROM form')->fetchAll(PDO::FETCH_COLUMN);
 $expectedColumns = [
     'id', 'first_name', 'last_name', 'contact', 'class', 'age', 'gender',
     'preferred_role', 'second_choice', 'motivation', 'programming_level',

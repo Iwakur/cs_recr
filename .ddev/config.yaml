@@ -12,6 +12,12 @@ database:
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
+hooks:
+    post-start:
+        - exec: >-
+              mysql -h db -uroot -proot -e "CREATE DATABASE IF NOT EXISTS cansat
+              CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+              GRANT ALL PRIVILEGES ON cansat.* TO 'db'@'%'; FLUSH PRIVILEGES;"
 nodejs_version: "24"
 corepack_enable: false
 

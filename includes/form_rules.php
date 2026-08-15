@@ -20,4 +20,9 @@ return [
         'time_commitment' => 600,
     ],
     'age' => ['min' => 16, 'max' => 25],
+    'request_max_bytes' => 262144,
+    'array_max_items' => [
+        'known_skills' => 12,
+        'availability' => 6,
+    ],
 ];
