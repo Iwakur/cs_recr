@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/db.php';
 $formRules = require __DIR__ . '/includes/form_rules.php';
 
 $errors = [];
-$classOptions = ['4TTR info', '5TTR info', '6TTR info', 'Autre'];
+$classOptions = ['4TTR info', '5TTR info', '6TTR info','4GMS', '5GMS', '6GMS', 'Autre'];
 $roleOptions = [
         'Programmation',
         'Électronique',
@@ -22,12 +22,12 @@ $genderOptions = ['Fille', 'Garçon'];
 $experienceLevels = ['Aucune expérience', 'Bases', 'Intermédiaire', 'Avancé'];
 $languageLevels = ['Débutant', 'Élémentaire', 'Intermédiaire', 'Avancé'];
 $availabilityOptions = [
-        'Lundi après les cours',
-        'Mardi après les cours',
-        'Mercredi après-midi',
-        'Jeudi après les cours',
-        'Vendredi après les cours',
-        'Certains week-ends',
+        'Lundi',
+        'Mardi',
+        'Mercredi',
+        'Jeudi',
+        'Vendredi',
+        'Week-ends',
 ];
 $skillOptions = [
         'Arduino / ESP32',

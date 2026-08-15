@@ -3,7 +3,6 @@
 $root = dirname(__DIR__);
 $runner = __DIR__ . '/form_case_runner.php';
 $form = file_get_contents($root . '/form.php');
-$database = file_get_contents($root . '/includes/db.php');
 $rules = require $root . '/includes/form_rules.php';
 
 $failures = [];
@@ -156,7 +155,6 @@ assertError(
 assertNotContains($form, "'phone' => 'Téléphone'", 'Phone contact option');
 assertNotContains($form, 'name="phone"', 'Phone contact input');
 assertContains($form, "'contact' => \$values['preferred_contact'] . ': ' . \$values[\$values['preferred_contact']]", 'Prefixed contact storage');
-assertContains($database, 'ALTER TABLE applications ADD COLUMN contact', 'Legacy contact migration');
 
 assertError(
     ['preferred_contact' => 'phone', 'discord' => '', 'phone' => '+32 470 12 34 56'],

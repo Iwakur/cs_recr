@@ -39,34 +39,6 @@ function db(): ?PDO
             }
 
             $pdo->exec($schema);
-
-            $columns = $pdo->query('SHOW COLUMNS FROM applications')->fetchAll(PDO::FETCH_COLUMN);
-            if (in_array('preferred_contact', $columns, true)) {
-                if (!in_array('contact', $columns, true)) {
-                    $pdo->exec('ALTER TABLE applications ADD COLUMN contact VARCHAR(275) NULL AFTER last_name');
-                }
-                $pdo->exec(
-                    "UPDATE applications SET contact = COALESCE(contact, CONCAT(
-                        preferred_contact,
-                        ': ',
-                        CASE preferred_contact
-                            WHEN 'email' THEN COALESCE(email, '')
-                            WHEN 'telegram' THEN COALESCE(telegram, '')
-                            WHEN 'discord' THEN COALESCE(discord, '')
-                            WHEN 'instagram' THEN COALESCE(instagram, '')
-                            WHEN 'phone' THEN COALESCE(phone, '')
-                            ELSE ''
-                        END
-                    ))"
-                );
-                $pdo->exec('ALTER TABLE applications MODIFY contact VARCHAR(275) NOT NULL');
-
-                foreach (['email', 'phone', 'telegram', 'discord', 'instagram', 'preferred_contact'] as $legacyColumn) {
-                    if (in_array($legacyColumn, $columns, true)) {
-                        $pdo->exec("ALTER TABLE applications DROP COLUMN `{$legacyColumn}`");
-                    }
-                }
-            }
         }
 
         return $pdo;

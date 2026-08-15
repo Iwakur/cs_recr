@@ -1,40 +1,34 @@
-CANSAT 26 static recruitment site containing:
-- page explaining project
-- page for applying to team
+# CanSat 2026–2027 recruitment site
 
-French was chosen as broad local language 
-Stack:
-- Plain php
-- Mysql
+Minimal French-language recruitment website for the CEPES de Jodoigne CanSat team.
 
+## Stack
 
+- Plain PHP
+- MySQL/MariaDB through PDO
+- DDEV for local development
 
-Convitions:
-- every logical part as well as ids etc stay in english french only for displayable text
-- keep styles minimal,as well as the whole project should be functional, polished, well structured but minimal
-- AS it s a recruitment site it should be read with quick interest, easy and with inspire curiosity without too much fluff
+## Main files
 
+- `index.php` — project information and recruitment landing page
+- `form.php` — application form, frontend behavior, backend validation, and persistence
+- `success.php` — successful-submission confirmation
+- `rules.txt` — human-readable validation specification
+- `includes/form_rules.php` — executable shared limits
+- `sql/schema.sql` — clean database schema
+- `tests/form_validation_test.php` — validation and tampering tests
+- `tests/database_schema_test.php` — live database contract test
 
+## Local verification
 
+```sh
+ddev exec php tests/form_validation_test.php
+ddev exec php tests/database_schema_test.php
+```
 
+## Conventions
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-BEfore deploy inst for agent:
-Check grammar, consistency
-readability across every major device and browser
-check the site to be complete and ready for depl
-check site to be polite and adress to Vous
+- Internal field names, IDs, and code remain in English.
+- User-facing copy is French and addresses applicants with “vous”.
+- Keep the site functional, polished, and minimal.
+- Keep `rules.txt`, `includes/form_rules.php`, `form.php`, tests, and the SQL schema synchronized whenever validation changes.

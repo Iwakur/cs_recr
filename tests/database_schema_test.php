@@ -9,21 +9,19 @@ if (!$pdo instanceof PDO) {
 }
 
 $columns = $pdo->query('SHOW COLUMNS FROM applications')->fetchAll(PDO::FETCH_COLUMN);
-$requiredColumns = ['contact'];
-$legacyColumns = ['email', 'phone', 'telegram', 'discord', 'instagram', 'preferred_contact'];
+$expectedColumns = [
+    'id', 'first_name', 'last_name', 'contact', 'class', 'age', 'gender',
+    'preferred_role', 'second_choice', 'motivation', 'programming_level',
+    'electronics_level', 'cad_level', 'science_level', 'english_listening_level',
+    'english_speaking_level', 'known_skills', 'problem_solving', 'role_flexibility',
+    'programming_experience', 'electronics_experience', 'cad_experience',
+    'science_experience', 'communication_experience', 'other_projects',
+    'availability', 'time_commitment', 'consent', 'created_at',
+];
 
-foreach ($requiredColumns as $column) {
-    if (!in_array($column, $columns, true)) {
-        fwrite(STDERR, "Missing required column: {$column}\n");
-        exit(1);
-    }
-}
-
-foreach ($legacyColumns as $column) {
-    if (in_array($column, $columns, true)) {
-        fwrite(STDERR, "Legacy contact column still exists: {$column}\n");
-        exit(1);
-    }
+if ($columns !== $expectedColumns) {
+    fwrite(STDERR, 'Unexpected database columns: ' . implode(', ', $columns) . "\n");
+    exit(1);
 }
 
 echo "Database schema validation passed.\n";

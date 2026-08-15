@@ -47,6 +47,5 @@ BACKEND RULES
 - consent must have the exact submitted value "1".
 - The selected contact value is conditionally required and validated by its own format rule.
 - The chosen method and value are stored in one database field with a prefix, for example "discord: alice.cansat".
-- Existing databases migrate legacy contact columns into the same prefixed contact field during automatic initialization.
 - Invalid submissions are not written to the database and receive field-specific French errors.
 - Database VARCHAR sizes must be greater than or equal to the matching application limits.

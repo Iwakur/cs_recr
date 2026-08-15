@@ -30,27 +30,3 @@ CREATE TABLE IF NOT EXISTS applications (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CHECK (age BETWEEN 16 AND 25)
 );
-
-
-# cansat-site/
-# ├── compose.yaml
-# ├── Dockerfile
-# ├── .env
-# ├── .gitignore
-# │
-# ├── index.php
-# ├── apply.php
-# ├── success.php
-# │
-# ├── includes/
-# │   ├── header.php
-# │   ├── footer.php
-# │   └── db.php
-# │
-# ├── assets/
-# │   ├── css/
-# │   └── images/
-# │
-# └── docker/
-#     └── mysql/
-#         └── init.sql
