@@ -23,7 +23,7 @@
         <h2>À propos du site</h2>
         <p><b>Projet :</b> CanSat 2026-2027 — CEPES de Jodoigne.</p>
         <p><b>Coordination :</b> M. Gorlier, professeur d'informatique.</p>
-        <p><b>Données :</b> les informations envoyées servent uniquement au recrutement de l'équipe CanSat et vous recontacter</p>
+        <p><b>Données :</b> les informations envoyées servent uniquement à recruter l'équipe CanSat et à vous recontacter.</p>
         <small class="site-credit">Site développé par Ryzhkin Hlib — étudiant de 5GMMS.</small>
     </section>
 </footer>

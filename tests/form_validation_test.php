@@ -95,13 +95,13 @@ assertError(
 
 assertError(
     ['class' => 'Autre', 'other_class' => ''],
-    'Indique ta classe si tu choisis "Autre".',
+    'Indiquez votre classe si vous choisissez "Autre".',
     'Other class validation'
 );
 
 assertError(
     ['preferred_contact' => 'telegram', 'discord' => '', 'telegram' => ''],
-    'Indique ton contact pour le moyen de communication choisi.',
+    'Indiquez votre contact pour le moyen de communication choisi.',
     'Preferred contact required field validation'
 );
 
@@ -113,7 +113,7 @@ assertError(
 
 assertError(
     ['english_listening_level' => 'Expert'],
-    "Un niveau d'expérience choisi n'est pas valide.",
+    "Un niveau d'anglais choisi n'est pas valide.",
     'English oral level validation'
 );
 
@@ -125,7 +125,7 @@ assertError(
 
 assertError(
     ['availability' => []],
-    'Choisis au moins une disponibilité après les cours.',
+    'Choisissez au moins une disponibilité après les cours.',
     'Availability checkbox validation'
 );
 

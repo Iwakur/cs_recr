@@ -3,8 +3,8 @@
 <main class="container form-page">
     <section class="final-cta">
         <h1>Merci !</h1>
-        <p>Ta candidature a bien été reçue.</p>
-        <p>Nous te contacterons après la date limite des candidatures.</p>
+        <p>Votre candidature a bien été reçue.</p>
+        <p>Nous vous contacterons après la date limite des candidatures.</p>
         <a role="button" href="index.php">Retour à l'accueil</a>
     </section>
 </main>

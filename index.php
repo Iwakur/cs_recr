@@ -10,7 +10,7 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
             <p class="eyebrow">CanSat 2026-2027</p>
             <h1>Design. Build. Launch.</h1>
             <p>
-                Rejoins l'équipe de l'école pour concevoir, construire, tester et
+                Rejoignez l'équipe de l'école pour concevoir, construire, tester et
                 présenter un mini-satellite dans le cadre du concours CanSat.
             </p>
             <p>Les candidatures sont ouvertes jusqu'au 15 septembre 2026.</p>
@@ -78,8 +78,6 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
             </article>
             <article><h3>Communication</h3>
                 <p>Présentation, identité visuelle, documentation et réseaux sociaux.</p></article>
-            <article><h3>Gestion de projet</h3>
-                <p>Planning, coordination, suivi des tâches et préparation des livrables pour le concours.</p></article>
         </div>
     </section>
 
@@ -196,7 +194,7 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
             </p>
         </details>
 
-        <small>Si tu as encore des questions, contacte-nous sans hésitation avec les informations en bas de
+        <small>Si vous avez encore des questions, contactez-nous sans hésitation avec les informations en bas de
             page.</small>
 
     </section>

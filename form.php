@@ -20,6 +20,7 @@ $contactOptions = [
 ];
 $genderOptions = ['Fille', 'Garçon'];
 $experienceLevels = ['Aucune expérience', 'Bases', 'Intermédiaire', 'Avancé'];
+$languageLevels = ['Débutant', 'Élémentaire', 'Intermédiaire', 'Avancé'];
 $availabilityOptions = [
         'Lundi après les cours',
         'Mardi après les cours',
@@ -114,13 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $required = [
             'first_name' => 'Le prénom est obligatoire.',
             'last_name' => 'Le nom est obligatoire.',
-            'preferred_contact' => 'Choisis le moyen de contact que tu préfères.',
+            'preferred_contact' => 'Choisissez votre moyen de contact préféré.',
             'class' => 'La classe est obligatoire.',
             'age' => "L'âge est obligatoire.",
-            'gender' => 'Choisis une option pour le genre.',
-            'preferred_role' => 'Choisis un rôle préféré.',
-            'motivation' => 'Explique brièvement ta motivation.',
-            'time_commitment' => 'Indique combien de temps tu peux consacrer au projet.',
+            'gender' => 'Choisissez une option pour le genre.',
+            'preferred_role' => 'Choisissez un rôle préféré.',
+            'motivation' => 'Expliquez brièvement votre motivation.',
+            'time_commitment' => 'Indiquez combien de temps vous pouvez consacrer au projet.',
     ];
 
     foreach ($required as $field => $message) {
@@ -146,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             && array_key_exists($values['preferred_contact'], $contactOptions)
             && $values[$values['preferred_contact']] === ''
     ) {
-        $errors[] = 'Indique ton contact pour le moyen de communication choisi.';
+        $errors[] = 'Indiquez votre contact pour le moyen de communication choisi.';
     }
 
     if ($values['class'] !== '' && !in_array($values['class'], $classOptions, true)) {
@@ -154,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($values['class'] === 'Autre' && $values['other_class'] === '') {
-        $errors[] = 'Indique ta classe si tu choisis "Autre".';
+        $errors[] = 'Indiquez votre classe si vous choisissez "Autre".';
     }
 
     if ($values['gender'] !== '' && !in_array($values['gender'], $genderOptions, true)) {
@@ -181,9 +182,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'La motivation doit faire 800 caractères maximum.';
     }
 
-    foreach (['programming_level', 'electronics_level', 'cad_level', 'science_level', 'english_listening_level', 'english_speaking_level'] as $levelField) {
+    foreach (['programming_level', 'electronics_level', 'cad_level', 'science_level'] as $levelField) {
         if ($values[$levelField] !== '' && !in_array($values[$levelField], $experienceLevels, true)) {
             $errors[] = "Un niveau d'expérience choisi n'est pas valide.";
+        }
+    }
+
+    foreach (['english_listening_level', 'english_speaking_level'] as $languageField) {
+        if ($values[$languageField] !== '' && !in_array($values[$languageField], $languageLevels, true)) {
+            $errors[] = "Un niveau d'anglais choisi n'est pas valide.";
         }
     }
 
@@ -206,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($values['availability'] === []) {
-        $errors[] = 'Choisis au moins une disponibilité après les cours.';
+        $errors[] = 'Choisissez au moins une disponibilité après les cours.';
     }
 
     foreach ($values['availability'] as $availability) {
@@ -224,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!isset($_POST['consent'])) {
-        $errors[] = 'Tu dois accepter que tes informations soient utilisées pour le recrutement.';
+        $errors[] = 'Vous devez accepter que vos informations soient utilisées pour le recrutement.';
     }
 
     if ($errors === []) {
@@ -307,8 +314,8 @@ include_once __DIR__ . '/includes/header.php';
     <section>
         <h1>Postuler à l'équipe CanSat</h1>
         <p>
-            Présente-toi, indique ce qui t'intéresse et explique pourquoi
-            tu veux participer au projet.
+            Présentez-vous, indiquez ce qui vous intéresse et expliquez pourquoi
+            vous souhaitez participer au projet.
         </p>
     </section>
 
@@ -441,7 +448,7 @@ include_once __DIR__ . '/includes/header.php';
         </fieldset>
 
         <label>
-            Pourquoi veux-tu rejoindre l'équipe ?
+            Pourquoi souhaitez-vous rejoindre l'équipe ?
             <textarea name="motivation" rows="5" maxlength="800" required><?= field('motivation') ?></textarea>
         </label>
         <hr>
@@ -496,7 +503,7 @@ include_once __DIR__ . '/includes/header.php';
                     Compréhension orale en anglais
                     <select name="english_listening_level">
                         <option value="">Choisir...</option>
-                        <?php foreach ($experienceLevels as $level): ?>
+                        <?php foreach ($languageLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('english_listening_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -506,7 +513,7 @@ include_once __DIR__ . '/includes/header.php';
                     Expression orale en anglais
                     <select name="english_speaking_level">
                         <option value="">Choisir...</option>
-                        <?php foreach ($experienceLevels as $level): ?>
+                        <?php foreach ($languageLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('english_speaking_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -526,7 +533,7 @@ include_once __DIR__ . '/includes/header.php';
             </fieldset>
 
             <label>
-                Si le CanSat ne transmet plus de données pendant un test, que vérifierais-tu en premier ? Décris ton raisonnement.
+                Si le CanSat ne transmet plus de données pendant un test, que vérifieriez-vous en premier ? Décrivez votre raisonnement.
                 <textarea name="problem_solving" rows="3" maxlength="600"><?= field('problem_solving') ?></textarea>
             </label>
 
@@ -549,37 +556,37 @@ include_once __DIR__ . '/includes/header.php';
             <label>
                 Programmation
                 <textarea name="programming_experience" rows="3"
-                          placeholder="Décris le langage, le type de projet, le matériel utilisé ou ce que ton programme devait faire."><?= field('programming_experience') ?></textarea>
+                          placeholder="Décrivez le langage, le type de projet, le matériel utilisé ou ce que votre programme devait faire."><?= field('programming_experience') ?></textarea>
             </label>
 
             <label>
                 Électronique
                 <textarea name="electronics_experience" rows="3"
-                          placeholder="Décris les capteurs, circuits, câblages, soudures ou tests que tu as déjà faits."><?= field('electronics_experience') ?></textarea>
+                          placeholder="Décrivez les capteurs, circuits, câblages, soudures ou tests que vous avez déjà faits."><?= field('electronics_experience') ?></textarea>
             </label>
 
             <label>
                 CAD / 3D
                 <textarea name="cad_experience" rows="3"
-                          placeholder="Décris les pièces modélisées, logiciels utilisés, impressions 3D ou contraintes mécaniques."><?= field('cad_experience') ?></textarea>
+                          placeholder="Décrivez les pièces modélisées, logiciels utilisés, impressions 3D ou contraintes mécaniques."><?= field('cad_experience') ?></textarea>
             </label>
 
             <label>
                 Sciences
                 <textarea name="science_experience" rows="3"
-                          placeholder="Décris ton expérience en physique, mesures, graphiques, analyse de données ou rédaction scientifique."><?= field('science_experience') ?></textarea>
+                          placeholder="Décrivez votre expérience en physique, mesures, graphiques, analyse de données ou rédaction scientifique."><?= field('science_experience') ?></textarea>
             </label>
 
             <label>
                 Communication
                 <textarea name="communication_experience" rows="3"
-                          placeholder="Décris ton expérience en présentation, gestion des réseaux sociaux, création de contenu ou prise de contact avec des partenaires."><?= field('communication_experience') ?></textarea>
+                          placeholder="Décrivez votre expérience en présentation, gestion des réseaux sociaux, création de contenu ou prise de contact avec des partenaires."><?= field('communication_experience') ?></textarea>
             </label>
 
             <label>
                 Projets réalisés
                 <textarea name="other_projects" rows="3"
-                          placeholder="Décris un ou deux projets dont tu es fier, même s'ils ne sont pas liés au CanSat."><?= field('other_projects') ?></textarea>
+                          placeholder="Décrivez un ou deux projets dont vous êtes fier, même s'ils ne sont pas liés au CanSat."><?= field('other_projects') ?></textarea>
             </label>
         </fieldset>
         <hr>
@@ -597,7 +604,7 @@ include_once __DIR__ . '/includes/header.php';
         </fieldset>
 
         <label>
-            Combien de temps peux-tu consacrer au projet chaque semaine ?
+            Combien de temps pouvez-vous consacrer au projet chaque semaine ?
             <textarea name="time_commitment" rows="3" maxlength="600" required
                       placeholder="Exemple : 1 réunion par semaine + 1 ou 2 heures à la maison quand il y a des tests."><?= field('time_commitment') ?></textarea>
         </label>
