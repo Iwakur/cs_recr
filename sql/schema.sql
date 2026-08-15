@@ -2,12 +2,7 @@ CREATE TABLE IF NOT EXISTS applications (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) DEFAULT NULL,
-    phone VARCHAR(25) DEFAULT NULL,
-    telegram VARCHAR(100) DEFAULT NULL,
-    discord VARCHAR(100) DEFAULT NULL,
-    instagram VARCHAR(100) DEFAULT NULL,
-    preferred_contact VARCHAR(50) NOT NULL,
+    contact VARCHAR(275) NOT NULL,
     class VARCHAR(50) NOT NULL,
     age TINYINT UNSIGNED NOT NULL,
     gender VARCHAR(50) NOT NULL,
@@ -31,8 +26,9 @@ CREATE TABLE IF NOT EXISTS applications (
     other_projects TEXT DEFAULT NULL,
     availability TEXT NOT NULL,
     time_commitment TEXT NOT NULL,
-    consent TINYINT(1) NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    consent TINYINT(1) NOT NULL DEFAULT 1 CHECK (consent = 1),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CHECK (age BETWEEN 16 AND 25)
 );
 
 

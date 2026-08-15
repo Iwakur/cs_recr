@@ -1,0 +1,52 @@
+FORM VALIDATION RULES
+=====================
+
+This file is the human-editable specification for the recruitment form.
+After changing a rule here, synchronize includes/form_rules.php, form.php,
+tests/form_validation_test.php, and sql/schema.sql where applicable.
+
+FRONTEND RULES
+--------------
+- first_name: required text; maximum 100 characters.
+- last_name: required text; maximum 100 characters.
+- class: required; one of the displayed class options.
+- other_class: required only when class is "Autre"; maximum 50 characters.
+- age: required whole number; minimum 16, maximum 25.
+- gender: required; one of the displayed options.
+- preferred_contact: required; one of email, telegram, discord or instagram. Telephone is not offered.
+- selected contact field: required; unselected contact fields are disabled.
+- email: valid email address; maximum 255 characters.
+- telegram, discord, instagram: maximum 100 characters each.
+- preferred_role: required; one of the displayed role options.
+- second_choice: optional; one of the displayed role options and different from preferred_role.
+- motivation: required; maximum 800 characters.
+- experience and English levels: optional; one of the displayed options.
+- known_skills: optional checkboxes; only displayed options are accepted.
+- problem_solving: optional; maximum 600 characters.
+- role_flexibility: optional; Oui, Peut-être or Non.
+- each experience/project description: optional; maximum 1500 characters.
+- availability: at least one displayed option is required.
+- time_commitment: required; maximum 600 characters.
+- consent: required.
+- Long text fields display a live character count.
+- Conditional and cross-field rules are checked in the browser for quicker feedback.
+- A note at the top explains that * marks required fields.
+- Required and conditionally required field labels display *; optional fields have no marker.
+
+BACKEND RULES
+-------------
+- Every frontend rule above is repeated server-side; browser validation is never trusted.
+- Every field marked * is required by PHP, either always or when its condition is active.
+- Scalar fields must be strings; submitted arrays/objects are rejected.
+- Multi-select fields must be arrays; scalar submissions are rejected.
+- Leading and trailing whitespace is removed before validation.
+- Character limits use Unicode-aware character counts.
+- Select, radio and checkbox values must exactly match server allowlists.
+- Duplicate submitted checkbox values are rejected.
+- age must be an integer from 16 through 25.
+- consent must have the exact submitted value "1".
+- The selected contact value is conditionally required and validated by its own format rule.
+- The chosen method and value are stored in one database field with a prefix, for example "discord: alice.cansat".
+- Existing databases migrate legacy contact columns into the same prefixed contact field during automatic initialization.
+- Invalid submissions are not written to the database and receive field-specific French errors.
+- Database VARCHAR sizes must be greater than or equal to the matching application limits.

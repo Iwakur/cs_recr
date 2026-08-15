@@ -3,6 +3,8 @@
 $root = dirname(__DIR__);
 $runner = __DIR__ . '/form_case_runner.php';
 $form = file_get_contents($root . '/form.php');
+$database = file_get_contents($root . '/includes/db.php');
+$rules = require $root . '/includes/form_rules.php';
 
 $failures = [];
 
@@ -82,7 +84,17 @@ assertContains($form, 'Disponibilités pour les réunions', 'Availability legend
 assertContains($form, 'otherClassInput.disabled = !isOther;', 'Disabled hidden class input');
 assertContains($form, 'input.disabled = !isSelected;', 'Disabled hidden contact inputs');
 assertContains($form, 'setCustomValidity', 'Duplicate role browser validation');
-assertContains($form, 'maxlength="800"', 'Motivation maxlength');
+assertContains($form, 'data-character-counter', 'Character counters');
+assertContains($form, 'validateAvailability', 'Availability browser validation');
+assertContains($form, '$formRules[\'lengths\'][\'motivation\']', 'Shared motivation maxlength');
+assertContains($form, '* Champs obligatoires', 'Required field legend');
+assertContains($form, 'Prénom *', 'Required first name marker');
+assertContains($form, 'Classe précise *', 'Conditionally required class marker');
+assertContains($form, 'Deuxième choix', 'Optional second role label');
+assertNotContains($form, 'Deuxième choix *', 'Optional second role marker');
+if (($rules['lengths']['motivation'] ?? null) !== 800) {
+    fail('Motivation rule should be 800 characters.');
+}
 assertNotContains($form, '???', 'Placeholder question');
 assertNotContains($form, 'Scientific', 'Mixed English role label');
 assertNotContains($form, 'reunions', 'Unaccented reunions');
@@ -91,6 +103,42 @@ assertError(
     ['second_choice' => 'Programmation'],
     'Le deuxième choix doit être différent du rôle préféré.',
     'Duplicate role validation'
+);
+
+assertError(
+    ['first_name' => str_repeat('a', 101)],
+    'Le prénom doit faire 100 caractères maximum.',
+    'First name length validation'
+);
+
+assertError(
+    ['programming_experience' => str_repeat('a', 1501)],
+    "L'expérience en programmation doit faire 1500 caractères maximum.",
+    'Experience length validation'
+);
+
+assertError(
+    ['age' => '16.5'],
+    "L'âge doit être un nombre entier entre 16 et 25 ans.",
+    'Non-integer age validation'
+);
+
+assertError(
+    ['first_name' => ['Alice']],
+    'Certaines données envoyées ont un format invalide.',
+    'Scalar field tampering validation'
+);
+
+assertError(
+    ['known_skills' => ['Python', 'Python']],
+    'Une compétence ne peut être choisie qu’une seule fois.',
+    'Duplicate skill validation'
+);
+
+assertError(
+    ['consent' => 'yes'],
+    'Vous devez accepter que vos informations soient utilisées pour le recrutement.',
+    'Exact consent validation'
 );
 
 assertError(
@@ -105,10 +153,15 @@ assertError(
     'Preferred contact required field validation'
 );
 
+assertNotContains($form, "'phone' => 'Téléphone'", 'Phone contact option');
+assertNotContains($form, 'name="phone"', 'Phone contact input');
+assertContains($form, "'contact' => \$values['preferred_contact'] . ': ' . \$values[\$values['preferred_contact']]", 'Prefixed contact storage');
+assertContains($database, 'ALTER TABLE applications ADD COLUMN contact', 'Legacy contact migration');
+
 assertError(
-    ['preferred_contact' => 'phone', 'discord' => '', 'phone' => 'abc'],
-    "Le numéro de téléphone n'est pas valide.",
-    'Phone format validation'
+    ['preferred_contact' => 'phone', 'discord' => '', 'phone' => '+32 470 12 34 56'],
+    "Le moyen de contact choisi n'est pas valide.",
+    'Removed phone option backend validation'
 );
 
 assertError(
@@ -131,7 +184,7 @@ assertError(
 
 assertError(
     ['availability' => 'Samedi toute la journée'],
-    "Une disponibilité choisie n'est pas valide.",
+    'Certaines données envoyées ont un format invalide.',
     'Scalar availability tampering validation'
 );
 

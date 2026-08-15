@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
+$formRules = require __DIR__ . '/includes/form_rules.php';
 
 $errors = [];
 $classOptions = ['4TTR info', '5TTR info', '6TTR info', 'Autre'];
@@ -13,7 +14,6 @@ $roleOptions = [
 ];
 $contactOptions = [
         'email' => 'E-mail',
-        'phone' => 'Téléphone',
         'telegram' => 'Telegram',
         'discord' => 'Discord',
         'instagram' => 'Instagram',
@@ -47,7 +47,6 @@ $values = [
         'first_name' => '',
         'last_name' => '',
         'email' => '',
-        'phone' => '',
         'telegram' => '',
         'discord' => '',
         'instagram' => '',
@@ -103,13 +102,32 @@ function checked(string $name, string $value): string
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $invalidTypes = [];
     foreach ($values as $key => $_) {
         if (is_array($_)) {
             $submittedValues = $_POST[$key] ?? [];
-            $values[$key] = array_values(array_filter(array_map('trim', is_array($submittedValues) ? $submittedValues : [$submittedValues])));
+            if (!is_array($submittedValues)) {
+                $invalidTypes[$key] = true;
+                $values[$key] = [];
+                continue;
+            }
+            $values[$key] = array_values(array_filter(array_map(
+                static fn ($value): string => is_string($value) ? trim($value) : '',
+                $submittedValues
+            ), static fn (string $value): bool => $value !== ''));
         } else {
-            $values[$key] = trim($_POST[$key] ?? '');
+            $submittedValue = $_POST[$key] ?? '';
+            if (!is_string($submittedValue)) {
+                $invalidTypes[$key] = true;
+                $values[$key] = '';
+                continue;
+            }
+            $values[$key] = trim($submittedValue);
         }
+    }
+
+    if ($invalidTypes !== []) {
+        $errors[] = 'Certaines données envoyées ont un format invalide.';
     }
 
     $required = [
@@ -130,12 +148,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($values['email'] !== '' && !filter_var($values['email'], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "L'adresse e-mail n'est pas valide.";
+    $lengthLabels = [
+        'first_name' => 'Le prénom',
+        'last_name' => 'Le nom',
+        'email' => "L'adresse e-mail",
+        'telegram' => "L'identifiant Telegram",
+        'discord' => "L'identifiant Discord",
+        'instagram' => "L'identifiant Instagram",
+        'other_class' => 'La classe précise',
+        'motivation' => 'La motivation',
+        'problem_solving' => 'La réponse de résolution de problème',
+        'programming_experience' => "L'expérience en programmation",
+        'electronics_experience' => "L'expérience en électronique",
+        'cad_experience' => "L'expérience en CAD / 3D",
+        'science_experience' => "L'expérience en sciences",
+        'communication_experience' => "L'expérience en communication",
+        'other_projects' => 'Les projets réalisés',
+        'time_commitment' => 'Le temps consacré au projet',
+    ];
+
+    foreach ($formRules['lengths'] as $fieldName => $maximum) {
+        if (mb_strlen($values[$fieldName]) > $maximum) {
+            $errors[] = $lengthLabels[$fieldName] . " doit faire {$maximum} caractères maximum.";
+        }
     }
 
-    if ($values['phone'] !== '' && !preg_match('/^[0-9 +().-]{6,25}$/', $values['phone'])) {
-        $errors[] = "Le numéro de téléphone n'est pas valide.";
+    if ($values['email'] !== '' && !filter_var($values['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "L'adresse e-mail n'est pas valide.";
     }
 
     if ($values['preferred_contact'] !== '' && !array_key_exists($values['preferred_contact'], $contactOptions)) {
@@ -178,10 +217,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Le deuxième choix doit être différent du rôle préféré.';
     }
 
-    if (mb_strlen($values['motivation']) > 800) {
-        $errors[] = 'La motivation doit faire 800 caractères maximum.';
-    }
-
     foreach (['programming_level', 'electronics_level', 'cad_level', 'science_level'] as $levelField) {
         if ($values[$levelField] !== '' && !in_array($values[$levelField], $experienceLevels, true)) {
             $errors[] = "Un niveau d'expérience choisi n'est pas valide.";
@@ -201,15 +236,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($values['role_flexibility'] !== '' && !in_array($values['role_flexibility'], ['Oui', 'Peut-être', 'Non'], true)) {
-        $errors[] = "La réponse sur la flexibilité de rôle n'est pas valide.";
+    if (count($values['known_skills']) !== count(array_unique($values['known_skills']))) {
+        $errors[] = 'Une compétence ne peut être choisie qu’une seule fois.';
     }
 
-    foreach (['problem_solving', 'time_commitment'] as $shortAnswerField) {
-        if (mb_strlen($values[$shortAnswerField]) > 600) {
-            $errors[] = 'Les réponses courtes doivent faire 600 caractères maximum.';
-            break;
-        }
+    if ($values['role_flexibility'] !== '' && !in_array($values['role_flexibility'], ['Oui', 'Peut-être', 'Non'], true)) {
+        $errors[] = "La réponse sur la flexibilité de rôle n'est pas valide.";
     }
 
     if ($values['availability'] === []) {
@@ -223,14 +255,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if (count($values['availability']) !== count(array_unique($values['availability']))) {
+        $errors[] = 'Une disponibilité ne peut être choisie qu’une seule fois.';
+    }
+
     if ($values['age'] !== '') {
         $age = filter_var($values['age'], FILTER_VALIDATE_INT);
-        if ($age === false || $age < 16 || $age > 25) {
-            $errors[] = "L'âge doit être un nombre réaliste.";
+        if ($age === false || $age < $formRules['age']['min'] || $age > $formRules['age']['max']) {
+            $errors[] = "L'âge doit être un nombre entier entre {$formRules['age']['min']} et {$formRules['age']['max']} ans.";
         }
     }
 
-    if (!isset($_POST['consent'])) {
+    if (($_POST['consent'] ?? null) !== '1') {
         $errors[] = 'Vous devez accepter que vos informations soient utilisées pour le recrutement.';
     }
 
@@ -243,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $statement = $pdo->prepare(
                         'INSERT INTO applications (
-                        first_name, last_name, email, phone, telegram, discord, instagram, preferred_contact,
+                        first_name, last_name, contact,
                         class, age, gender, preferred_role, second_choice,
                         motivation, programming_level, electronics_level, cad_level, science_level,
                         english_listening_level, english_speaking_level, known_skills,
@@ -252,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         science_experience, communication_experience, other_projects,
                         availability, time_commitment, consent
                     ) VALUES (
-                        :first_name, :last_name, :email, :phone, :telegram, :discord, :instagram, :preferred_contact,
+                        :first_name, :last_name, :contact,
                         :class, :age, :gender, :preferred_role, :second_choice,
                         :motivation, :programming_level, :electronics_level, :cad_level, :science_level,
                         :english_listening_level, :english_speaking_level, :known_skills,
@@ -266,12 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $statement->execute([
                         'first_name' => $values['first_name'],
                         'last_name' => $values['last_name'],
-                        'email' => $values['email'],
-                        'phone' => $values['phone'],
-                        'telegram' => $values['telegram'],
-                        'discord' => $values['discord'],
-                        'instagram' => $values['instagram'],
-                        'preferred_contact' => $values['preferred_contact'],
+                        'contact' => $values['preferred_contact'] . ': ' . $values[$values['preferred_contact']],
                         'class' => $values['class'] === 'Autre' ? $values['other_class'] : $values['class'],
                         'age' => (int)$values['age'],
                         'gender' => $values['gender'],
@@ -317,6 +348,7 @@ include_once __DIR__ . '/includes/header.php';
             Présentez-vous, indiquez ce qui vous intéresse et expliquez pourquoi
             vous souhaitez participer au projet.
         </p>
+        <p><small>* Champs obligatoires</small></p>
     </section>
 
     <?php if ($errors !== []): ?>
@@ -337,17 +369,21 @@ include_once __DIR__ . '/includes/header.php';
             <legend>Informations personnelles</legend>
 
             <label>
-                Prénom
-                <input type="text" name="first_name" value="<?= field('first_name') ?>" required>
+                Prénom *
+                <input type="text" name="first_name" value="<?= field('first_name') ?>"
+                       maxlength="<?= $formRules['lengths']['first_name'] ?>" required>
+                <small><?= $formRules['lengths']['first_name'] ?> caractères maximum.</small>
             </label>
 
             <label>
-                Nom
-                <input type="text" name="last_name" value="<?= field('last_name') ?>" required>
+                Nom *
+                <input type="text" name="last_name" value="<?= field('last_name') ?>"
+                       maxlength="<?= $formRules['lengths']['last_name'] ?>" required>
+                <small><?= $formRules['lengths']['last_name'] ?> caractères maximum.</small>
             </label>
             <div class="form-row">
                 <label>
-                    Classe
+                    Classe *
                     <select name="class" id="class-select" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($classOptions as $classOption): ?>
@@ -357,12 +393,14 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
 
                 <label>
-                    Âge
-                    <input type="number" name="age" min="16" max="25" value="<?= field('age') ?>" required>
+                    Âge *
+                    <input type="number" name="age" min="<?= $formRules['age']['min'] ?>"
+                           max="<?= $formRules['age']['max'] ?>" step="1" value="<?= field('age') ?>" required>
+                    <small>Entre <?= $formRules['age']['min'] ?> et <?= $formRules['age']['max'] ?> ans.</small>
                 </label>
 
                 <label>
-                    Genre
+                    Genre *
                     <select name="gender" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($genderOptions as $genderOption): ?>
@@ -374,13 +412,14 @@ include_once __DIR__ . '/includes/header.php';
             </div>
 
             <label class="conditional-field" id="other-class-field">
-                Classe précise
+                Classe précise *
                 <input type="text" name="other_class" id="other-class-input" value="<?= field('other_class') ?>"
-                       placeholder="ex. 5e sciences appliquées" maxlength="50">
+                       placeholder="ex. 5e sciences appliquées" maxlength="<?= $formRules['lengths']['other_class'] ?>">
+                <small><?= $formRules['lengths']['other_class'] ?> caractères maximum.</small>
             </label>
             <div class="communication-fields">
                 <label>
-                    Moyen de contact préféré
+                    Moyen de contact préféré *
                     <select name="preferred_contact" id="preferred-contact" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($contactOptions as $value => $label): ?>
@@ -390,33 +429,31 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
 
                 <label class="conditional-field contact-method-field" data-contact-method="email">
-                    E-mail
+                    E-mail *
                     <input type="email" name="email" value="<?= field('email') ?>"
-                           placeholder="E-mail : prenom.nom@ecole.be" maxlength="255">
-                </label>
-
-                <label class="conditional-field contact-method-field" data-contact-method="phone">
-                    Téléphone
-                    <input type="tel" name="phone" value="<?= field('phone') ?>"
-                           placeholder="Téléphone : +32 470 12 34 56" maxlength="25" pattern="[0-9 +().-]{6,25}">
+                           placeholder="E-mail : prenom.nom@ecole.be" maxlength="<?= $formRules['lengths']['email'] ?>">
+                    <small>Adresse e-mail valide, <?= $formRules['lengths']['email'] ?> caractères maximum.</small>
                 </label>
 
                 <label class="conditional-field contact-method-field" data-contact-method="telegram">
-                    Telegram
+                    Telegram *
                     <input type="text" name="telegram" value="<?= field('telegram') ?>"
-                           placeholder="Telegram : @prenom_cansat" maxlength="100">
+                           placeholder="Telegram : @prenom_cansat" maxlength="<?= $formRules['lengths']['telegram'] ?>">
+                    <small><?= $formRules['lengths']['telegram'] ?> caractères maximum.</small>
                 </label>
 
                 <label class="conditional-field contact-method-field" data-contact-method="discord">
-                    Discord
+                    Discord *
                     <input type="text" name="discord" value="<?= field('discord') ?>"
-                           placeholder="Discord : prenom.cansat" maxlength="100">
+                           placeholder="Discord : prenom.cansat" maxlength="<?= $formRules['lengths']['discord'] ?>">
+                    <small><?= $formRules['lengths']['discord'] ?> caractères maximum.</small>
                 </label>
 
                 <label class="conditional-field contact-method-field" data-contact-method="instagram">
-                    Instagram
+                    Instagram *
                     <input type="text" name="instagram" value="<?= field('instagram') ?>"
-                           placeholder="Instagram : @prenom_projet" maxlength="100">
+                           placeholder="Instagram : @prenom_projet" maxlength="<?= $formRules['lengths']['instagram'] ?>">
+                    <small><?= $formRules['lengths']['instagram'] ?> caractères maximum.</small>
                 </label>
             </div>
 
@@ -427,7 +464,7 @@ include_once __DIR__ . '/includes/header.php';
             <legend>Intérêts</legend>
 
             <label>
-                Rôle préféré
+                Rôle préféré *
                 <select name="preferred_role" id="preferred-role" required>
                     <option value="">Choisir...</option>
                     <?php foreach ($roleOptions as $role): ?>
@@ -448,8 +485,10 @@ include_once __DIR__ . '/includes/header.php';
         </fieldset>
 
         <label>
-            Pourquoi souhaitez-vous rejoindre l'équipe ?
-            <textarea name="motivation" rows="5" maxlength="800" required><?= field('motivation') ?></textarea>
+            Pourquoi souhaitez-vous rejoindre l'équipe ? *
+            <textarea name="motivation" rows="5" maxlength="<?= $formRules['lengths']['motivation'] ?>"
+                      data-character-counter required><?= field('motivation') ?></textarea>
+            <small class="character-count"><?= mb_strlen($values['motivation']) ?> / <?= $formRules['lengths']['motivation'] ?> caractères</small>
         </label>
         <hr>
 
@@ -534,7 +573,9 @@ include_once __DIR__ . '/includes/header.php';
 
             <label>
                 Si le CanSat ne transmet plus de données pendant un test, que vérifieriez-vous en premier ? Décrivez votre raisonnement.
-                <textarea name="problem_solving" rows="3" maxlength="600"><?= field('problem_solving') ?></textarea>
+                <textarea name="problem_solving" rows="3" maxlength="<?= $formRules['lengths']['problem_solving'] ?>"
+                          data-character-counter><?= field('problem_solving') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['problem_solving']) ?> / <?= $formRules['lengths']['problem_solving'] ?> caractères</small>
             </label>
 
             <fieldset>
@@ -555,44 +596,51 @@ include_once __DIR__ . '/includes/header.php';
 
             <label>
                 Programmation
-                <textarea name="programming_experience" rows="3"
+                <textarea name="programming_experience" rows="3" maxlength="<?= $formRules['lengths']['programming_experience'] ?>" data-character-counter
                           placeholder="Décrivez le langage, le type de projet, le matériel utilisé ou ce que votre programme devait faire."><?= field('programming_experience') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['programming_experience']) ?> / <?= $formRules['lengths']['programming_experience'] ?> caractères</small>
             </label>
 
             <label>
                 Électronique
-                <textarea name="electronics_experience" rows="3"
+                <textarea name="electronics_experience" rows="3" maxlength="<?= $formRules['lengths']['electronics_experience'] ?>" data-character-counter
                           placeholder="Décrivez les capteurs, circuits, câblages, soudures ou tests que vous avez déjà faits."><?= field('electronics_experience') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['electronics_experience']) ?> / <?= $formRules['lengths']['electronics_experience'] ?> caractères</small>
             </label>
 
             <label>
                 CAD / 3D
-                <textarea name="cad_experience" rows="3"
+                <textarea name="cad_experience" rows="3" maxlength="<?= $formRules['lengths']['cad_experience'] ?>" data-character-counter
                           placeholder="Décrivez les pièces modélisées, logiciels utilisés, impressions 3D ou contraintes mécaniques."><?= field('cad_experience') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['cad_experience']) ?> / <?= $formRules['lengths']['cad_experience'] ?> caractères</small>
             </label>
 
             <label>
                 Sciences
-                <textarea name="science_experience" rows="3"
+                <textarea name="science_experience" rows="3" maxlength="<?= $formRules['lengths']['science_experience'] ?>" data-character-counter
                           placeholder="Décrivez votre expérience en physique, mesures, graphiques, analyse de données ou rédaction scientifique."><?= field('science_experience') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['science_experience']) ?> / <?= $formRules['lengths']['science_experience'] ?> caractères</small>
             </label>
 
             <label>
                 Communication
-                <textarea name="communication_experience" rows="3"
+                <textarea name="communication_experience" rows="3" maxlength="<?= $formRules['lengths']['communication_experience'] ?>" data-character-counter
                           placeholder="Décrivez votre expérience en présentation, gestion des réseaux sociaux, création de contenu ou prise de contact avec des partenaires."><?= field('communication_experience') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['communication_experience']) ?> / <?= $formRules['lengths']['communication_experience'] ?> caractères</small>
             </label>
 
             <label>
                 Projets réalisés
-                <textarea name="other_projects" rows="3"
+                <textarea name="other_projects" rows="3" maxlength="<?= $formRules['lengths']['other_projects'] ?>" data-character-counter
                           placeholder="Décrivez un ou deux projets dont vous êtes fier, même s'ils ne sont pas liés au CanSat."><?= field('other_projects') ?></textarea>
+                <small class="character-count"><?= mb_strlen($values['other_projects']) ?> / <?= $formRules['lengths']['other_projects'] ?> caractères</small>
             </label>
         </fieldset>
         <hr>
 
         <fieldset>
-            <legend>Disponibilités pour les réunions</legend>
+            <legend>Disponibilités pour les réunions *</legend>
+            <small>Choisissez au moins une disponibilité.</small>
             <div class="checkbox-grid">
                 <?php foreach ($availabilityOptions as $availabilityOption): ?>
                     <label>
@@ -604,14 +652,15 @@ include_once __DIR__ . '/includes/header.php';
         </fieldset>
 
         <label>
-            Combien de temps pouvez-vous consacrer au projet chaque semaine ?
-            <textarea name="time_commitment" rows="3" maxlength="600" required
+            Combien de temps pouvez-vous consacrer au projet chaque semaine ? *
+            <textarea name="time_commitment" rows="3" maxlength="<?= $formRules['lengths']['time_commitment'] ?>" data-character-counter required
                       placeholder="Exemple : 1 réunion par semaine + 1 ou 2 heures à la maison quand il y a des tests."><?= field('time_commitment') ?></textarea>
+            <small class="character-count"><?= mb_strlen($values['time_commitment']) ?> / <?= $formRules['lengths']['time_commitment'] ?> caractères</small>
         </label>
 
         <label>
             <input type="checkbox" name="consent" value="1" required>
-            J'accepte que mes informations soient utilisées pour le recrutement de l'équipe CanSat.
+            J'accepte que mes informations soient utilisées pour le recrutement de l'équipe CanSat. *
         </label>
 
         <button type="submit">Envoyer la candidature</button>
@@ -628,6 +677,8 @@ include_once __DIR__ . '/includes/header.php';
     const contactMethodFields = document.querySelectorAll('.contact-method-field');
     const preferredRoleSelect = document.querySelector('#preferred-role');
     const secondChoiceSelect = document.querySelector('#second-choice');
+    const characterCountFields = document.querySelectorAll('[data-character-counter]');
+    const availabilityInputs = document.querySelectorAll('input[name="availability[]"]');
 
     function updateOtherClassField() {
         const isOther = classSelect.value === 'Autre';
@@ -669,6 +720,24 @@ include_once __DIR__ . '/includes/header.php';
     preferredRoleSelect.addEventListener('change', validateRoleChoices);
     secondChoiceSelect.addEventListener('change', validateRoleChoices);
     validateRoleChoices();
+
+    characterCountFields.forEach((field) => {
+        const counter = field.nextElementSibling;
+        const updateCharacterCount = () => {
+            counter.textContent = `${Array.from(field.value).length} / ${field.maxLength} caractères`;
+        };
+
+        field.addEventListener('input', updateCharacterCount);
+        updateCharacterCount();
+    });
+
+    function validateAvailability() {
+        const hasAvailability = Array.from(availabilityInputs).some((input) => input.checked);
+        availabilityInputs[0].setCustomValidity(hasAvailability ? '' : 'Choisissez au moins une disponibilité après les cours.');
+    }
+
+    availabilityInputs.forEach((input) => input.addEventListener('change', validateAvailability));
+    validateAvailability();
 </script>
 
 <?php include_once __DIR__ . '/includes/footer.php'; ?>
