@@ -5,16 +5,18 @@
         <nav aria-label="Liens de contact">
             <span class="contact-link">
                 <img src="assets/img/contact/email.svg" alt="" aria-hidden="true">
-                E-mail: <a href="mailto:engleb.a.gleb.ryzhkin@gmail.com">engleb.a.gleb.ryzhkin@gmail.com</a>
+                E-mail: <a href="mailto:engleb.a.gleb.ryzhkin@gmail.com" target="_blank" rel="noopener noreferrer">engleb.a.gleb.ryzhkin@gmail.com</a>
             </span>
             <span class="contact-link">
                 <img src="assets/img/contact/discord.svg" alt="" aria-hidden="true">
-                Discord: <a href="https://discord.com/users/725294721802436660">iwakur</a>
+                Discord: <a href="https://discord.com/users/725294721802436660" target="_blank" rel="noopener noreferrer">iwakur</a>
             </span>
             <span class="contact-link">
                 <img src="assets/img/contact/telegram.svg" alt="" aria-hidden="true">
-                Telegram: <a href="https://t.me/IwakurXX">IwakurXX</a>
+                Telegram: <a href="https://t.me/IwakurXX" target="_blank" rel="noopener noreferrer">IwakurXX</a>
             </span>
+                <small class="site-credit">Contacts de Ryzhkin Hlib, organisateur de l'équipe.</small>
+
         </nav>
 
     </section>
