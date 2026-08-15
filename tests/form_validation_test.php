@@ -75,6 +75,9 @@ function assertError(array $override, string $expectedError, string $label): voi
 }
 
 assertContains($form, 'name="science_experience"', 'Science experience textarea');
+assertContains($form, 'name="communication_experience"', 'Communication experience textarea');
+assertContains($form, 'name="english_listening_level"', 'English oral comprehension level');
+assertContains($form, 'name="english_speaking_level"', 'English oral speaking level');
 assertContains($form, 'Disponibilités pour les réunions', 'Availability legend accent');
 assertContains($form, 'otherClassInput.disabled = !isOther;', 'Disabled hidden class input');
 assertContains($form, 'input.disabled = !isSelected;', 'Disabled hidden contact inputs');
@@ -106,6 +109,12 @@ assertError(
     ['preferred_contact' => 'phone', 'discord' => '', 'phone' => 'abc'],
     "Le numéro de téléphone n'est pas valide.",
     'Phone format validation'
+);
+
+assertError(
+    ['english_listening_level' => 'Expert'],
+    "Un niveau d'expérience choisi n'est pas valide.",
+    'English oral level validation'
 );
 
 assertError(

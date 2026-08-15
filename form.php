@@ -18,7 +18,7 @@ $contactOptions = [
         'discord' => 'Discord',
         'instagram' => 'Instagram',
 ];
-$genderOptions = ['Fille', 'Garçon', 'Autre / préfère ne pas répondre'];
+$genderOptions = ['Fille', 'Garçon'];
 $experienceLevels = ['Aucune expérience', 'Bases', 'Intermédiaire', 'Avancé'];
 $availabilityOptions = [
         'Lundi après les cours',
@@ -62,6 +62,8 @@ $values = [
         'electronics_level' => '',
         'cad_level' => '',
         'science_level' => '',
+        'english_listening_level' => '',
+        'english_speaking_level' => '',
         'known_skills' => [],
         'problem_solving' => '',
         'role_flexibility' => '',
@@ -69,6 +71,7 @@ $values = [
         'electronics_experience' => '',
         'cad_experience' => '',
         'science_experience' => '',
+        'communication_experience' => '',
         'other_projects' => '',
         'availability' => [],
         'time_commitment' => '',
@@ -178,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'La motivation doit faire 800 caractères maximum.';
     }
 
-    foreach (['programming_level', 'electronics_level', 'cad_level', 'science_level'] as $levelField) {
+    foreach (['programming_level', 'electronics_level', 'cad_level', 'science_level', 'english_listening_level', 'english_speaking_level'] as $levelField) {
         if ($values[$levelField] !== '' && !in_array($values[$levelField], $experienceLevels, true)) {
             $errors[] = "Un niveau d'expérience choisi n'est pas valide.";
         }
@@ -235,17 +238,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'INSERT INTO applications (
                         first_name, last_name, email, phone, telegram, discord, instagram, preferred_contact,
                         class, age, gender, preferred_role, second_choice,
-                        motivation, programming_level, electronics_level, cad_level, science_level, known_skills,
+                        motivation, programming_level, electronics_level, cad_level, science_level,
+                        english_listening_level, english_speaking_level, known_skills,
                         problem_solving, role_flexibility,
                         programming_experience, electronics_experience, cad_experience,
-                        science_experience, other_projects, availability, time_commitment, consent
+                        science_experience, communication_experience, other_projects,
+                        availability, time_commitment, consent
                     ) VALUES (
                         :first_name, :last_name, :email, :phone, :telegram, :discord, :instagram, :preferred_contact,
                         :class, :age, :gender, :preferred_role, :second_choice,
-                        :motivation, :programming_level, :electronics_level, :cad_level, :science_level, :known_skills,
+                        :motivation, :programming_level, :electronics_level, :cad_level, :science_level,
+                        :english_listening_level, :english_speaking_level, :known_skills,
                         :problem_solving, :role_flexibility,
                         :programming_experience, :electronics_experience, :cad_experience,
-                        :science_experience, :other_projects, :availability, :time_commitment, :consent
+                        :science_experience, :communication_experience, :other_projects,
+                        :availability, :time_commitment, :consent
                     )'
                 );
 
@@ -268,6 +275,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'electronics_level' => $values['electronics_level'],
                         'cad_level' => $values['cad_level'],
                         'science_level' => $values['science_level'],
+                        'english_listening_level' => $values['english_listening_level'],
+                        'english_speaking_level' => $values['english_speaking_level'],
                         'known_skills' => implode(', ', $values['known_skills']),
                         'problem_solving' => $values['problem_solving'],
                         'role_flexibility' => $values['role_flexibility'],
@@ -275,6 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'electronics_experience' => $values['electronics_experience'],
                         'cad_experience' => $values['cad_experience'],
                         'science_experience' => $values['science_experience'],
+                        'communication_experience' => $values['communication_experience'],
                         'other_projects' => $values['other_projects'],
                         'availability' => implode(', ', $values['availability']),
                         'time_commitment' => $values['time_commitment'],
@@ -481,6 +491,28 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
             </div>
 
+            <div class="experience-level-row">
+                <label>
+                    Compréhension orale en anglais
+                    <select name="english_listening_level">
+                        <option value="">Choisir...</option>
+                        <?php foreach ($experienceLevels as $level): ?>
+                            <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('english_listening_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+
+                <label>
+                    Expression orale en anglais
+                    <select name="english_speaking_level">
+                        <option value="">Choisir...</option>
+                        <?php foreach ($experienceLevels as $level): ?>
+                            <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('english_speaking_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            </div>
+
             <fieldset>
                 <legend>Compétences déjà vues</legend>
                 <div class="checkbox-grid">
@@ -536,6 +568,12 @@ include_once __DIR__ . '/includes/header.php';
                 Sciences
                 <textarea name="science_experience" rows="3"
                           placeholder="Décris ton expérience en physique, mesures, graphiques, analyse de données ou rédaction scientifique."><?= field('science_experience') ?></textarea>
+            </label>
+
+            <label>
+                Communication
+                <textarea name="communication_experience" rows="3"
+                          placeholder="Décris ton expérience en présentation, gestion des réseaux sociaux, création de contenu ou prise de contact avec des partenaires."><?= field('communication_experience') ?></textarea>
             </label>
 
             <label>
