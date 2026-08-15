@@ -113,7 +113,8 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
             l'<span class="info-popover" tabindex="0">IMU<span class="info-popover-content" role="tooltip">Une IMU
                     (unité de mesure inertielle) mesure l'accélération, la rotation et l'orientation du
                     CanSat pendant le vol.</span></span> et un site web permettant de les visualiser. L'équipe a
-            participé à la finale régionale belge et a obtenu la 2e place.
+            participé à la finale régionale belge et a obtenu la 2e place. Découvrez également notre ancien site -
+            <a href="https://cansat-25-26.iwakur.com" target="_blank" rel="noopener noreferrer">cansat-25-26.iwakur.com</a>.
         </p>
     </section>
     <section id="gallery">
