@@ -3,6 +3,12 @@
 $runner = __DIR__ . '/result_case_runner.php';
 $failures = [];
 
+require_once dirname(__DIR__) . '/includes/config.php';
+
+if (SESSION_COOKIE_SECURE !== true) {
+    $failures[] = 'Session cookies should default to Secure.';
+}
+
 function renderResult(string $status): string
 {
     global $runner;

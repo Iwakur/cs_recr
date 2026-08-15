@@ -9,6 +9,7 @@ Minimal French-language recruitment website for the CEPES de Jodoigne CanSat tea
 - DDEV for local development
 
 The application database is `cansat`; recruitment submissions are stored in the `form` table.
+Session cookies default to HTTPS-only. Set `SESSION_COOKIE_SECURE=true` explicitly in production.
 
 Malformed-request limits are defined in `.user.ini` for standard PHP deployments and mirrored in
 `.ddev/php/cansat-hardening.ini` for DDEV. A custom production PHP image must allow `.user.ini` files

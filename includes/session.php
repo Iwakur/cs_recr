@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/config.php';
+
 function startAppSession(): void
 {
     if (session_status() === PHP_SESSION_ACTIVE) {
@@ -9,7 +11,7 @@ function startAppSession(): void
     session_set_cookie_params([
         'httponly' => true,
         'samesite' => 'Lax',
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'secure' => SESSION_COOKIE_SECURE,
     ]);
     session_start();
 }

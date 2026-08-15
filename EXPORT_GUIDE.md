@@ -76,6 +76,7 @@ services:
       DB_NAME: cansat
       DB_USER: your_database_user
       DB_PASS: your_private_password
+      SESSION_COOKIE_SECURE: "true"
   db:
     environment:
       MARIADB_DATABASE: cansat
