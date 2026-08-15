@@ -43,12 +43,12 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
             <article>
                 <h3>Informations supplémentaires</h3>
                 <ul>
-                    <li><a href="https://en.wikipedia.org/wiki/CanSat">Wikipédia - CanSat</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/CanSat" target="_blank" rel="noopener noreferrer">Wikipédia - CanSat</a></li>
                     <li>
-                        <a href="https://www.esa.int/Education/CanSat/CanSat_2025-2026_Challenge_your_students_to_build_a_can-sized_satellite">ESA - CanSat</a>
+                        <a href="https://www.esa.int/Education/CanSat/CanSat_2025-2026_Challenge_your_students_to_build_a_can-sized_satellite" target="_blank" rel="noopener noreferrer">ESA - CanSat</a>
                     </li>
                     <li>
-                        <a href="https://recherche.wallonie.be/Cansat-Belgium">Wallonie Recherche - CanSat Belgium</a>
+                        <a href="https://recherche.wallonie.be/Cansat-Belgium" target="_blank" rel="noopener noreferrer">Wallonie Recherche - CanSat Belgium</a>
                     </li>
                 </ul>
             </article>
@@ -107,7 +107,7 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
     </section>
 
     <section id="missions">
-        <h2>Mission précédente du CanSat 2025-2026</h2>
+        <h2>Mission CanSat précédente — 2025-2026</h2>
         <p>
             Nous avons construit un CanSat fonctionnel avec une analyse complète des données de
             l'<span class="info-popover" tabindex="0">IMU<span class="info-popover-content" role="tooltip">Une IMU
@@ -189,8 +189,9 @@ $daysRemaining = max(0, (int)$today->diff($deadline)->format('%r%a'));
         <details>
             <summary>Qu'est-ce qu'on attend de moi ?</summary>
             <p>
-                Nous attendons une participation régulière, curieuse et responsable. Il faudra essayer, proposer des
-                idées, chercher des solutions et participer activement au travail de l'équipe.
+                Nous attendons de chaque membre une participation régulière et responsable, ainsi que de la curiosité.
+                Un niveau d'anglais suffisant pour participer aux présentations, tout comme des compétences
+                techniques ou relationnelles permettant de contribuer à la communication et au projet en général.
             </p>
         </details>
 

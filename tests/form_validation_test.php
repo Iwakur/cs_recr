@@ -42,6 +42,13 @@ function formErrors(array $override): array
         'preferred_role' => 'Programmation',
         'second_choice' => 'Électronique',
         'motivation' => 'Je veux apprendre et contribuer au projet.',
+        'programming_level' => 'Bases',
+        'electronics_level' => 'Bases',
+        'cad_level' => 'Aucune expérience',
+        'science_level' => 'Intermédiaire',
+        'english_listening_level' => 'Intermédiaire',
+        'english_speaking_level' => 'Élémentaire',
+        'role_flexibility' => 'Oui',
         'availability' => ['Lundi après les cours'],
         'time_commitment' => 'Une réunion par semaine et du travail à la maison.',
         'consent' => '1',
@@ -86,11 +93,14 @@ assertContains($form, 'setCustomValidity', 'Duplicate role browser validation');
 assertContains($form, 'data-character-counter', 'Character counters');
 assertContains($form, 'validateAvailability', 'Availability browser validation');
 assertContains($form, '$formRules[\'lengths\'][\'motivation\']', 'Shared motivation maxlength');
-assertContains($form, '* Champs obligatoires', 'Required field legend');
+assertContains($form, "Les champs marqués d'un * sont obligatoires.", 'Required field legend');
 assertContains($form, 'Prénom *', 'Required first name marker');
 assertContains($form, 'Classe précise *', 'Conditionally required class marker');
 assertContains($form, 'Deuxième choix', 'Optional second role label');
 assertNotContains($form, 'Deuxième choix *', 'Optional second role marker');
+assertContains($form, 'Niveau en programmation *', 'Required programming level marker');
+assertContains($form, 'Compréhension orale en anglais *', 'Required English level marker');
+assertContains($form, 'Flexibilité de rôle *', 'Required role flexibility marker');
 if (($rules['lengths']['motivation'] ?? null) !== 800) {
     fail('Motivation rule should be 800 characters.');
 }
@@ -166,6 +176,24 @@ assertError(
     ['english_listening_level' => 'Expert'],
     "Un niveau d'anglais choisi n'est pas valide.",
     'English oral level validation'
+);
+
+assertError(
+    ['programming_level' => ''],
+    'Choisissez votre niveau en programmation.',
+    'Required experience level validation'
+);
+
+assertError(
+    ['english_speaking_level' => ''],
+    "Choisissez votre niveau d'expression orale en anglais.",
+    'Required English level validation'
+);
+
+assertError(
+    ['role_flexibility' => ''],
+    'Indiquez votre flexibilité de rôle.',
+    'Required role flexibility validation'
 );
 
 assertError(

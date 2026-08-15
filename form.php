@@ -139,6 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'gender' => 'Choisissez une option pour le genre.',
             'preferred_role' => 'Choisissez un rôle préféré.',
             'motivation' => 'Expliquez brièvement votre motivation.',
+            'programming_level' => 'Choisissez votre niveau en programmation.',
+            'electronics_level' => 'Choisissez votre niveau en électronique.',
+            'cad_level' => 'Choisissez votre niveau en CAD / 3D.',
+            'science_level' => 'Choisissez votre niveau en sciences.',
+            'english_listening_level' => 'Choisissez votre niveau de compréhension orale en anglais.',
+            'english_speaking_level' => "Choisissez votre niveau d'expression orale en anglais.",
+            'role_flexibility' => 'Indiquez votre flexibilité de rôle.',
             'time_commitment' => 'Indiquez combien de temps vous pouvez consacrer au projet.',
     ];
 
@@ -348,7 +355,7 @@ include_once __DIR__ . '/includes/header.php';
             Présentez-vous, indiquez ce qui vous intéresse et expliquez pourquoi
             vous souhaitez participer au projet.
         </p>
-        <p><small>* Champs obligatoires</small></p>
+        <p><small>Les champs marqués d'un * sont obligatoires.</small></p>
     </section>
 
     <?php if ($errors !== []): ?>
@@ -497,8 +504,8 @@ include_once __DIR__ . '/includes/header.php';
 
             <div class="experience-level-row">
                 <label>
-                    Niveau en programmation
-                    <select name="programming_level">
+                    Niveau en programmation *
+                    <select name="programming_level" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($experienceLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('programming_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
@@ -507,8 +514,8 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
 
                 <label>
-                    Niveau en électronique
-                    <select name="electronics_level">
+                    Niveau en électronique *
+                    <select name="electronics_level" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($experienceLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('electronics_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
@@ -517,8 +524,8 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
 
                 <label>
-                    Niveau en CAD / 3D
-                    <select name="cad_level">
+                    Niveau en CAD / 3D *
+                    <select name="cad_level" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($experienceLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('cad_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
@@ -527,8 +534,8 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
 
                 <label>
-                    Niveau en sciences
-                    <select name="science_level">
+                    Niveau en sciences *
+                    <select name="science_level" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($experienceLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('science_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
@@ -539,8 +546,8 @@ include_once __DIR__ . '/includes/header.php';
 
             <div class="experience-level-row">
                 <label>
-                    Compréhension orale en anglais
-                    <select name="english_listening_level">
+                    Compréhension orale en anglais *
+                    <select name="english_listening_level" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($languageLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('english_listening_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
@@ -549,8 +556,8 @@ include_once __DIR__ . '/includes/header.php';
                 </label>
 
                 <label>
-                    Expression orale en anglais
-                    <select name="english_speaking_level">
+                    Expression orale en anglais *
+                    <select name="english_speaking_level" required>
                         <option value="">Choisir...</option>
                         <?php foreach ($languageLevels as $level): ?>
                             <option value="<?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?>"<?= selected('english_speaking_level', $level) ?>><?= htmlspecialchars($level, ENT_QUOTES, 'UTF-8') ?></option>
@@ -560,7 +567,7 @@ include_once __DIR__ . '/includes/header.php';
             </div>
 
             <fieldset>
-                <legend>Compétences déjà vues</legend>
+                <legend>Compétences déjà pratiquées</legend>
                 <div class="checkbox-grid">
                     <?php foreach ($skillOptions as $skill): ?>
                         <label>
@@ -579,9 +586,9 @@ include_once __DIR__ . '/includes/header.php';
             </label>
 
             <fieldset>
-                <legend>Flexibilité de rôle</legend>
+                <legend>Flexibilité de rôle *</legend>
                 <label>
-                    <input type="radio" name="role_flexibility" value="Oui"<?= checked('role_flexibility', 'Oui') ?>>
+                    <input type="radio" name="role_flexibility" value="Oui"<?= checked('role_flexibility', 'Oui') ?> required>
                     Oui, je peux aider dans un autre rôle si l'équipe en a besoin.
                 </label>
                 <label>

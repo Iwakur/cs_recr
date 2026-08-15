@@ -20,17 +20,18 @@ FRONTEND RULES
 - preferred_role: required; one of the displayed role options.
 - second_choice: optional; one of the displayed role options and different from preferred_role.
 - motivation: required; maximum 800 characters.
-- experience and English levels: optional; one of the displayed options.
+- all four experience levels: required; one of the displayed options.
+- both English levels: required; one of the displayed options.
 - known_skills: optional checkboxes; only displayed options are accepted.
 - problem_solving: optional; maximum 600 characters.
-- role_flexibility: optional; Oui, Peut-être or Non.
+- role_flexibility: required; Oui, Peut-être or Non.
 - each experience/project description: optional; maximum 1500 characters.
 - availability: at least one displayed option is required.
 - time_commitment: required; maximum 600 characters.
 - consent: required.
 - Long text fields display a live character count.
 - Conditional and cross-field rules are checked in the browser for quicker feedback.
-- A note at the top explains that * marks required fields.
+- A note at the top explains: "Les champs marqués d'un * sont obligatoires."
 - Required and conditionally required field labels display *; optional fields have no marker.
 
 BACKEND RULES
