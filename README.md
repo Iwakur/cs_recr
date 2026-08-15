@@ -35,6 +35,12 @@ ddev exec php tests/result_page_test.php
 ddev exec php tests/database_schema_test.php
 ```
 
+## Production deployment
+
+The production setup uses a runtime-only FrankenPHP application image and a MariaDB container.
+Initialization, private exports, external Caddy integration, password matching, and the CI/CD
+strategy are documented in [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Conventions
 
 - Internal field names, IDs, and code remain in English.

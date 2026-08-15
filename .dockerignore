@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!index.php
+!form.php
+!result.php
+!assets/**
+!includes/**
+!scripts/export_applications.php
+!deploy/Caddyfile
+!deploy/php-production.ini

@@ -1,0 +1,67 @@
+name: CI and container publishing
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      LOCAL_IMAGE: cansat-recruitment:ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build production image
+        run: docker build --tag "$LOCAL_IMAGE" .
+
+      - name: PHP syntax and application tests
+        run: |
+          docker run --rm --entrypoint sh \
+            --volume "$PWD:/workspace:ro" \
+            --workdir /workspace \
+            "$LOCAL_IMAGE" \
+            -c 'find . -path ./.git -prune -o -name "*.php" -print -exec php -l {} \; && php tests/form_validation_test.php && php tests/result_page_test.php'
+
+      - name: Validate production Compose configuration
+        env:
+          DB_PASSWORD: ci-application-password
+          DB_ROOT_PASSWORD: ci-different-root-password
+          APP_IMAGE: ${{ env.LOCAL_IMAGE }}
+        run: docker compose -f compose.production.yaml config --quiet
+
+      - name: Choose GHCR image name
+        if: github.event_name == 'push'
+        run: echo "GHCR_IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish immutable commit image
+        if: github.event_name == 'push'
+        run: |
+          docker tag "$LOCAL_IMAGE" "$GHCR_IMAGE:sha-$GITHUB_SHA"
+          docker push "$GHCR_IMAGE:sha-$GITHUB_SHA"
+
+      - name: Publish latest image from main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          docker tag "$LOCAL_IMAGE" "$GHCR_IMAGE:latest"
+          docker push "$GHCR_IMAGE:latest"
+
+      - name: Publish version image from Git tag
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: |
+          docker tag "$LOCAL_IMAGE" "$GHCR_IMAGE:$GITHUB_REF_NAME"
+          docker push "$GHCR_IMAGE:$GITHUB_REF_NAME"

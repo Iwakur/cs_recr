@@ -1,0 +1,22 @@
+{
+	auto_https off
+	admin off
+}
+
+:8080 {
+	root * /app/public
+	encode zstd gzip
+
+	@private path /.git* /.env* /includes/* /scripts/* /tests/* /sql/* /deploy/* /*.md /rules.txt
+	respond @private 404
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	php_server
+	file_server
+}
