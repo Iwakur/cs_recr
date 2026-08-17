@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Site de recrutement pour l'équipe CanSat 2026-2027.">
+    <!-- Light / dark color support -->
+    <meta name="color-scheme" content="dark">
     <title>CanSat 2026-2027 - Recrutement</title>
     <link rel="icon" href="assets/img/cansat-logo.webp" type="image/webp">
     <link rel="stylesheet" href="assets/css/pico.min.css">
